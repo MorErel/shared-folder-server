@@ -26,7 +26,7 @@ public class FileHttpController {
     }
 
     @PostMapping
-    public ResponseEntity<FileDto> create(@RequestBody @RequestValidator("src/main/resources/schemas/file/create.json") FileDto file) {
+    public ResponseEntity<FileDto> create(@RequestBody /*todo @MorErel @RequestValidator("src/main/resources/schemas/file/create.json")*/ FileDto file) {
         FileDto addedFile = fileService.create(file);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(addedFile);
