@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "File",
+  "description": "File scheme",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "The unique name of the file",
+      "type": "string"
+    },
+    "id": {
+      "description": "The unique id of the file",
+      "type": "string"
+    },
+    "kind": {
+      "description": "kind of file",
+      "type": "string"
+    },
+    "size": {
+      "description": "size of file",
+      "type": "string"
+    },
+    "dateModified": {
+      "description": "date modified",
+      "type": "string"
+    },
+    "dateAdded": {
+      "description": "date added",
+      "type": "string"
+    },
+    "content": {
+      "description": "content",
+      "type": "array"
+    }
+  },
+  "required": ["name"]
+}
