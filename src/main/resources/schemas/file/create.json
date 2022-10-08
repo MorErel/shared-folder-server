@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "File",
+  "description": "File create scheme",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "The unique name of the file",
+      "type": "string"
+    },
+    "content": {
+      "description": "content",
+      "type": "array"
+    }
+  },
+  "required": ["name", "content"]
+}
