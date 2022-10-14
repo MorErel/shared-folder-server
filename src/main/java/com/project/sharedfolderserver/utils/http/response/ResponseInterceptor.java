@@ -21,7 +21,7 @@ public class ResponseInterceptor implements ResponseBodyAdvice<Object> {
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-        log.info("");
+        log.info("body: " + body);
         if (body instanceof Response)
             return body;
         return new Response(body);

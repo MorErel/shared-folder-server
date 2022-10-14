@@ -57,7 +57,11 @@ public class FileService {
             fileBeforeSaving.setDateModified(FileUtils.getTimeStamp());
             fileBeforeSaving.setDateAdded(FileUtils.getTimeStamp());
             File savedFile = fileRepository.save(fileBeforeSaving);
-            return toDto(savedFile);
+            UUID savedID = savedFile.getId();
+            log.info("saved file with id " + savedID);
+            FileDto withoutContent = findByIdWithoutContent(savedID).orElseThrow(() -> new FileCannotBeCreatedError("could not retrieve file without content after saving"));
+            log.info("fileDtoWithoutContent: " + withoutContent);
+            return withoutContent;
         } catch (Exception e) {
             log.error(ErrorMessages.FILE_CANNOT_BE_CREATED_ERROR_MESSAGE + " {}", e.getMessage());
             throw new FileCannotBeCreatedError(ErrorMessages.FILE_CANNOT_BE_CREATED_ERROR_MESSAGE + e.getMessage());

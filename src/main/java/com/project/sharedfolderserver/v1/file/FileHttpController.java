@@ -3,7 +3,6 @@ package com.project.sharedfolderserver.v1.file;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.project.sharedfolderserver.v1.file.exception.FileCannotBeCreatedError;
-import com.project.sharedfolderserver.v1.file.exception.FileCannotBeUpdatedError;
 import com.project.sharedfolderserver.v1.file.exception.FileNotFoundError;
 import com.project.sharedfolderserver.v1.utils.error.ErrorMessages;
 import com.project.sharedfolderserver.v1.utils.json.JsonUtil;
@@ -39,8 +38,10 @@ public class FileHttpController {
     }
 
     @PostMapping
+    //todo -
     //@RequestValidator("src/main/resources/schemas/file/create.json")
     public ResponseEntity<FileDto> create(@RequestBody JsonNode file) {
+        log.info("in create, request body: " + file);
         try {
             validationService.validate(file, "schemas/file/create.json");
             FileDto fileToAdd = JsonUtil.mapper.convertValue(file, new TypeReference<>() {
@@ -49,11 +50,13 @@ public class FileHttpController {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(addedFile);
         } catch (IOException | URISyntaxException e) {
-            log.error("error validation ", e.getMessage());
-            throw new FileCannotBeCreatedError(e.getMessage());
+            String error = String.format(ErrorMessages.REQUEST_VALIDATION_ERROR, e.getMessage());
+            log.error(error);
+            throw new FileCannotBeCreatedError(error);
         }
     }
 
+    // TODO - add validations - json schema validation
     @GetMapping("{id}")
     public ResponseEntity<FileDto> download(@PathVariable UUID id) {
         FileDto file = fileService.findById(id)
@@ -62,12 +65,14 @@ public class FileHttpController {
                 .body(file);
     }
 
+    // TODO - add validations - json schema validation
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         fileService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
+    // TODO - add validations - json schema validation
     @PutMapping("{id}")
     public ResponseEntity<FileDto> updateName(@PathVariable UUID id, @RequestBody FileDto file) {
         File fileDb = fileService.toDb(file);

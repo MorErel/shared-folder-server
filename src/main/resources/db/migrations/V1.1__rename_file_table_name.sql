@@ -1,1 +1,0 @@
-ALTER TABLE file RENAME TO files

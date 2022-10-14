@@ -9,4 +9,5 @@ public interface ErrorMessages {
     String FILE_CANNOT_BE_UPDATED = "file can not be updated, you can only update the name of the file. %s";
     String FILE_NOT_FOUND = "file with id %s does not exist";
     String UNEXPECTED_ERROR = "unexpected error %s";
+    String REQUEST_VALIDATION_ERROR = "validation error %s";
 }
