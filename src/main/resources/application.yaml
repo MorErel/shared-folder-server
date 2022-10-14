@@ -1,16 +1,22 @@
+migration:
+  enabled: {DB_MIGRATION_ENABLED:true}
+  schemasPath: {DB_MIGRATION_SCHEMAS_PATH:classpath:db/migrations}
+  baselineOnMigration: {DB_MIGRATION_BASELINE_ENABLED:true}
+
 spring:
+  flyway:
+    # should be disabled as we use our migration
+    enabled: false
   datasource:
     url: jdbc:postgresql://localhost:5432/file
     username: postgres
     password: postgres
   jpa:
     hibernate:
+      # should always be on validate
       ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-server:
-  error:
-    include-message: always
