@@ -11,7 +11,9 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 import org.apache.commons.io.FileUtils;
+
 import javax.validation.constraints.Pattern;
 
 @Data
@@ -22,8 +24,8 @@ public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column(unique=true)
-    @Pattern(regexp="^[a-zA-Z0-9_\\-]+\\.[a-zA-Z0-9_\\-]+$", message="file name must be in the form of NAME.KIND using number, letters, dashes and underscores")
+    @Column(unique = true)
+    @Pattern(regexp = "^[a-zA-Z0-9_\\-]+\\.[a-zA-Z0-9_\\-]+$", message = "file name must be in the form of NAME.KIND using number, letters, dashes and underscores")
     private String name;
     @Setter(AccessLevel.PACKAGE)
     @UpdateTimestamp
@@ -46,10 +48,11 @@ public class File {
     }
 
     public void setSize() {
-        if (content == null)
+        if (content == null) {
             this.size = "0";
-        else
+        } else {
             this.size = FileUtils.byteCountToDisplaySize(content.length);
+        }
     }
 
     private String extractKind() {

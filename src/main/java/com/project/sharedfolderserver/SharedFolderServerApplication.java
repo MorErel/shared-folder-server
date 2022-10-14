@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @SpringBootApplication
 public class SharedFolderServerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SharedFolderServerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SharedFolderServerApplication.class, args);
+    }
 
 }
