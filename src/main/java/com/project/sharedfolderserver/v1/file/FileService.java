@@ -66,7 +66,8 @@ public class FileService {
 
     public void delete(UUID id) {
         log.info("deleting file with id " + id);
-        findById(id);
+        findById(id)
+                .orElseThrow(()-> new FileNotFoundError(id));
         fileRepository.deleteById(id);
     }
 
