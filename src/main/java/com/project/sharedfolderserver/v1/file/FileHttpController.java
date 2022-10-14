@@ -28,6 +28,7 @@ import java.util.UUID;
 public class FileHttpController {
     private final FileService fileService;
     private final ValidationService validationService;
+
     // TODO - interseptor that gets the File object and wraps  -   public ResponseEntity<Response<FILE DTO>> interseptor (Object o)
     // TODO - add validations - json schema validation
     @GetMapping
@@ -40,15 +41,14 @@ public class FileHttpController {
     @PostMapping
     //@RequestValidator("src/main/resources/schemas/file/create.json")
     public ResponseEntity<FileDto> create(@RequestBody JsonNode file) {
-        try{
+        try {
             validationService.validate(file, "schemas/file/create.json");
             FileDto fileToAdd = JsonUtil.mapper.convertValue(file, new TypeReference<>() {
             });
             FileDto addedFile = fileService.create(fileToAdd);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(addedFile);
-        }
-        catch(IOException | URISyntaxException e){
+        } catch (IOException | URISyntaxException e) {
             log.error("error validation ", e.getMessage());
             throw new FileCannotBeCreatedError(e.getMessage());
         }
@@ -57,7 +57,7 @@ public class FileHttpController {
     @GetMapping("{id}")
     public ResponseEntity<FileDto> download(@PathVariable UUID id) {
         FileDto file = fileService.findById(id)
-                .orElseThrow(()-> new FileNotFoundError(id));
+                .orElseThrow(() -> new FileNotFoundError(id));
         return ResponseEntity.status(HttpStatus.OK)
                 .body(file);
     }

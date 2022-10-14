@@ -5,7 +5,6 @@ import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
-import com.project.sharedfolderserver.v1.file.FileDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

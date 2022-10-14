@@ -6,8 +6,8 @@ import java.util.UUID;
 
 public class FileNotFoundError extends BadRequestError {
     private final static String MESSAGE = "file with the id %s does not exist";
-    public FileNotFoundError(UUID uuid)
-    {
+
+    public FileNotFoundError(UUID uuid) {
         super(String.format(MESSAGE, uuid));
     }
 }

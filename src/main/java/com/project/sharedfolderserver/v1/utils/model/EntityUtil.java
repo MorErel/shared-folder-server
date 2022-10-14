@@ -10,7 +10,7 @@ public class EntityUtil {
 
     public final static ModelMapper mapper = new ModelMapper();
 
-    public <T> Object convert(T object, Class<?> clazz){
+    public <T> Object convert(T object, Class<?> clazz) {
         log.info("converting " + object + " to " + clazz);
         return mapper.map(object, clazz);
     }
