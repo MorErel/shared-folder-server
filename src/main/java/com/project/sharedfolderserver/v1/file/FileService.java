@@ -1,5 +1,6 @@
 package com.project.sharedfolderserver.v1.file;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.project.sharedfolderserver.v1.file.exception.FileCannotBeCreatedError;
 import com.project.sharedfolderserver.v1.file.exception.FileCannotBeUpdatedError;
 import com.project.sharedfolderserver.v1.file.exception.FileNameAlreadyExistsError;
