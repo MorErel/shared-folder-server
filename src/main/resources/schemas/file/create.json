@@ -10,7 +10,7 @@
     },
     "content": {
       "description": "content",
-      "type": "array"
+      "type": "string"
     }
   },
   "required": ["name", "content"]
