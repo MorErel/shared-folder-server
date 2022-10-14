@@ -1,5 +1,6 @@
 package com.project.sharedfolderserver.v1.file;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.project.sharedfolderserver.v1.file.exception.FileCannotBeCreatedError;
 import com.project.sharedfolderserver.v1.file.exception.FileCannotBeUpdatedError;
 import com.project.sharedfolderserver.v1.file.exception.FileNameAlreadyExistsError;
@@ -39,43 +40,44 @@ public class FileService {
             log.error(ErrorMessages.FILE_NAME_CANNOT_BE_EMPTY);
             throw new FileCannotBeCreatedError(ErrorMessages.FILE_NAME_CANNOT_BE_EMPTY);
         }
-        if(!requestedFileName.matches("^[a-zA-Z0-9_\\-]+\\.[a-zA-Z0-9_\\-]+$"))
-        {
+        if (!requestedFileName.matches("^[a-zA-Z0-9_\\-]+\\.[a-zA-Z0-9_\\-]+$")) {
             log.error(ErrorMessages.ILLEGAL_FILE_NAME);
             throw new FileCannotBeCreatedError(ErrorMessages.ILLEGAL_FILE_NAME);
         }
         fileRepository.findByName(requestedFileName)
-                .ifPresent(file -> {throw new FileNameAlreadyExistsError(requestedFileName);});
+                .ifPresent(file -> {
+                    throw new FileNameAlreadyExistsError(requestedFileName);
+                });
 
-       try {
-           log.info("saving file: " + fileToSave);
-           File fileBeforeSaving = toDb(fileToSave);
-           fileBeforeSaving.setSize();
-           fileBeforeSaving.setKind();
-           fileBeforeSaving.setDateModified(FileUtils.getTimeStamp());
-           fileBeforeSaving.setDateAdded(FileUtils.getTimeStamp());
-           File savedFile = fileRepository.save(fileBeforeSaving);
-           return toDto(savedFile);
-       } catch (Exception e) {
-           log.error(ErrorMessages.FILE_CANNOT_BE_CREATED_ERROR_MESSAGE + " {}", e.getMessage());
-           throw new FileCannotBeCreatedError(ErrorMessages.FILE_CANNOT_BE_CREATED_ERROR_MESSAGE + e.getMessage());
-       }
+        try {
+            log.info("saving file: " + fileToSave);
+            File fileBeforeSaving = toDb(fileToSave);
+            fileBeforeSaving.setSize();
+            fileBeforeSaving.setKind();
+            fileBeforeSaving.setDateModified(FileUtils.getTimeStamp());
+            fileBeforeSaving.setDateAdded(FileUtils.getTimeStamp());
+            File savedFile = fileRepository.save(fileBeforeSaving);
+            return toDto(savedFile);
+        } catch (Exception e) {
+            log.error(ErrorMessages.FILE_CANNOT_BE_CREATED_ERROR_MESSAGE + " {}", e.getMessage());
+            throw new FileCannotBeCreatedError(ErrorMessages.FILE_CANNOT_BE_CREATED_ERROR_MESSAGE + e.getMessage());
+        }
     }
 
-    public void delete(UUID id){
+    public void delete(UUID id) {
         log.info("deleting file with id " + id);
         findById(id);
         fileRepository.deleteById(id);
     }
 
-    public File updateName(File file){
+    public File updateName(File file) {
         log.info("updating file name");
         UUID id = file.getId();
-        FileDto fileDto = findById(id).orElseThrow(()-> new FileNotFoundError(id));
-        if(file.getContent() != null)
+        FileDto fileDto = findById(id).orElseThrow(() -> new FileNotFoundError(id));
+        if (file.getContent() != null)
             throw new FileCannotBeUpdatedError(ErrorMessages.FILE_CANNOT_BE_UPDATED);
 
-        try{
+        try {
             log.info("validating new name " + file.getName());
             FileUtils.validateFileName(file.getName(), fileRepository);
             log.info("name validated successfully");
@@ -91,22 +93,22 @@ public class FileService {
         }
     }
 
-    public Optional<FileDto> findById(UUID id){
+    public Optional<FileDto> findById(UUID id) {
         log.info("findById");
         return fileRepository.findById(id).map(this::toDto);
     }
 
-    public Optional<FileDto> findByIdWithoutContent(UUID id){
+    public Optional<FileDto> findByIdWithoutContent(UUID id) {
         return fileRepository.findByIdWithoutContent(id);
     }
 
     public FileDto toDto(File file) {
         log.info("to Dto");
-        return (FileDto)entityUtil.convert(file, FileDto.class);
+        return (FileDto) entityUtil.convert(file, FileDto.class);
     }
 
     public File toDb(FileDto fileDto) {
         log.info("to db");
-        return (File)entityUtil.convert(fileDto, File.class);
+        return (File) entityUtil.convert(fileDto, File.class);
     }
 }

@@ -23,8 +23,7 @@ public class ErrorInterceptor {
     }
 
     @ExceptionHandler(value = {BasicError.class})
-    public ResponseEntity<Response<Object>> basicErrorHandler(BasicError exception)
-    {
+    public ResponseEntity<Response<Object>> basicErrorHandler(BasicError exception) {
         Error error = ErrorBuilder.fromBasicError(exception);
         return ResponseEntity.status(exception.getStatus()).body(new Response<>(List.of(error)));
     }

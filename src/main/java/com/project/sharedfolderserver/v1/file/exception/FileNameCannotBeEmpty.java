@@ -5,8 +5,7 @@ import com.project.sharedfolderserver.utils.http.error.BadRequestError;
 public class FileNameCannotBeEmpty extends BadRequestError {
 
 
-    public FileNameCannotBeEmpty(String fileName)
-    {
+    public FileNameCannotBeEmpty(String fileName) {
         super(fileName);
     }
 }

@@ -6,8 +6,7 @@ public class FileNameAlreadyExistsError extends BadRequestError {
 
     private final static String MESSAGE = "file with the name %s already exists";
 
-    public FileNameAlreadyExistsError(String fileName)
-    {
+    public FileNameAlreadyExistsError(String fileName) {
         super(String.format(MESSAGE, fileName));
     }
 }
