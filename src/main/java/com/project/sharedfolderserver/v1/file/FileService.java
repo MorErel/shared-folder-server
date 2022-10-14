@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 // TODO controller advise,
-
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -52,8 +52,8 @@ public class FileService {
            File fileBeforeSaving = toDb(fileToSave);
            fileBeforeSaving.setSize();
            fileBeforeSaving.setKind();
-           fileBeforeSaving.setDateModified(FileUtils.getTimeStamp());
-           fileBeforeSaving.setDateAdded(FileUtils.getTimeStamp());
+           fileBeforeSaving.setDateModified(Instant.now());
+           fileBeforeSaving.setDateAdded(Instant.now());
            File savedFile = fileRepository.save(fileBeforeSaving);
            return toDto(savedFile);
        } catch (Exception e) {
@@ -83,7 +83,7 @@ public class FileService {
             file.setKind(fileDto.getKind());
             file.setSize(fileDto.getSize());
             file.setContent(fileDto.getContent());
-            file.setDateModified(FileUtils.getTimeStamp());
+            file.setDateModified(Instant.now());
             return fileRepository.save(file);
         } catch (FileNameAlreadyExistsError e) {
             log.error(ErrorMessages.FILE_CANNOT_BE_UPDATED + " {}", e.getMessage());

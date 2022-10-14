@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -12,14 +13,14 @@ import java.util.UUID;
 public class FileDto {
     private UUID id;
     private String name;
-    private LocalDateTime dateModified;
-    private LocalDateTime dateAdded;
+    private Instant dateModified;
+    private Instant dateAdded;
     private String kind;
     private String size;
     @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private byte[] content;
 
-    public FileDto(UUID id, String name, LocalDateTime dateModified, LocalDateTime dateAdded, String kind, String size)
+    public FileDto(UUID id, String name, Instant dateModified, Instant dateAdded, String kind, String size)
     {
         this.id = id;
         this.name = name;

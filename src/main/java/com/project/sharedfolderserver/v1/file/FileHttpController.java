@@ -13,7 +13,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping(path = "api/v1/file")
+@RequestMapping(path = "/1.0/files")
 public class FileHttpController {
     private final FileService fileService;
     // TODO - interseptor that gets the File object and wraps  -   public ResponseEntity<Response<FILE DTO>> interseptor (Object o)
