@@ -26,7 +26,7 @@ public class FileUtils {
         log.info("validating file name");
         if (!StringUtils.hasText(name)) {
             log.error(ErrorMessages.FILE_NAME_CANNOT_BE_EMPTY);
-            throw new FileNameCannotBeEmpty(name);
+            throw new FileNameCannotBeEmpty();
         }
         if (!name.matches("^[a-zA-Z0-9_\\-]+\\.[a-zA-Z0-9_\\-]+$")) {
             log.error(ErrorMessages.ILLEGAL_FILE_NAME);

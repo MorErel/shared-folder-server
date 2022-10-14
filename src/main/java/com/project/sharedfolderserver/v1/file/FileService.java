@@ -75,7 +75,7 @@ public class FileService {
         UUID id = file.getId();
         FileDto fileDto = findById(id).orElseThrow(() -> new FileNotFoundError(id));
         if (file.getContent() != null)
-            throw new FileCannotBeUpdatedError(ErrorMessages.FILE_CANNOT_BE_UPDATED);
+            throw new FileCannotBeUpdatedError();
 
         try {
             log.info("validating new name " + file.getName());
@@ -89,7 +89,7 @@ public class FileService {
             return fileRepository.save(file);
         } catch (FileNameAlreadyExistsError e) {
             log.error(ErrorMessages.FILE_CANNOT_BE_UPDATED + " {}", e.getMessage());
-            throw new FileCannotBeUpdatedError(ErrorMessages.FILE_CANNOT_BE_UPDATED + e.getMessage());
+            throw new FileCannotBeUpdatedError(e.getMessage());
         }
     }
 
