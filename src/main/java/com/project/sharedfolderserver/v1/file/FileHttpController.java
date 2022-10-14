@@ -30,7 +30,6 @@ public class FileHttpController {
     private final ValidationService validationService;
 
     // TODO - interseptor that gets the File object and wraps  -   public ResponseEntity<Response<FILE DTO>> interseptor (Object o)
-    // TODO - add validations - json schema validation
     @GetMapping
     public ResponseEntity<List<FileDto>> list() {
         List<FileDto> files = fileService.list();
@@ -51,7 +50,6 @@ public class FileHttpController {
                 .body(addedFile);
     }
 
-    // TODO - add validations - json schema validation
     @GetMapping("{id}")
     public ResponseEntity<FileDto> download(@PathVariable UUID id) {
         FileDto file = fileService.findById(id)
@@ -60,7 +58,6 @@ public class FileHttpController {
                 .body(file);
     }
 
-    // TODO - add validations - json schema validation
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         log.info("in delete, id: " + id);
@@ -68,7 +65,6 @@ public class FileHttpController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO - add validations - json schema validation
     @PutMapping("{id}")
     public ResponseEntity<FileDto> updateName(@PathVariable UUID id, @RequestBody JsonNode file) {
         validationService.validate(file, "schemas/file/update.json");
