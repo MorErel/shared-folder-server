@@ -1,6 +1,6 @@
 package com.project.sharedfolderserver.v1.file;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.project.sharedfolderserver.utils.http.error.BadRequestError;
 import com.project.sharedfolderserver.v1.file.exception.FileCannotBeCreatedError;
 import com.project.sharedfolderserver.v1.file.exception.FileCannotBeUpdatedError;
 import com.project.sharedfolderserver.v1.file.exception.FileNameAlreadyExistsError;
@@ -51,6 +51,7 @@ public class FileService {
 
         try {
             log.info("saving file: " + fileToSave);
+
             File fileBeforeSaving = toDb(fileToSave);
             fileBeforeSaving.setSize();
             fileBeforeSaving.setKind();
@@ -74,24 +75,32 @@ public class FileService {
         fileRepository.deleteById(id);
     }
 
-    public File updateName(File file) {
+    public FileDto updateName(FileDto file) {
         log.info("updating file name");
         UUID id = file.getId();
         FileDto fileDto = findById(id).orElseThrow(() -> new FileNotFoundError(id));
+        String newName = file.getName();
         if (file.getContent() != null)
             throw new FileCannotBeUpdatedError();
 
         try {
-            log.info("validating new name " + file.getName());
-            FileUtils.validateFileName(file.getName(), fileRepository);
+            log.info("validating new name " + newName);
+            FileUtils.validateFileName(newName, fileRepository);
             log.info("name validated successfully");
-            file.setDateAdded(fileDto.getDateAdded());
-            file.setKind(fileDto.getKind());
-            file.setSize(fileDto.getSize());
-            file.setContent(fileDto.getContent());
-            file.setDateModified(FileUtils.getTimeStamp());
-            return fileRepository.save(file);
-        } catch (FileNameAlreadyExistsError e) {
+
+            File fileBeforeSaving = toDb(fileDto);
+            fileBeforeSaving.setDateModified(FileUtils.getTimeStamp());
+            log.info("$$$$$$$$ " + fileDto.getDateAdded());
+            fileBeforeSaving.setDateAdded(fileDto.getDateAdded());
+            fileBeforeSaving.setName(newName);
+            File savedFile = fileRepository.save(fileBeforeSaving);
+            UUID savedID = savedFile.getId();
+            log.info("updated file with id " + savedID);
+            FileDto withoutContent = findByIdWithoutContent(savedID).orElseThrow(() -> new FileCannotBeUpdatedError("could not retrieve file without content after saving"));
+            log.info("fileDtoWithoutContent: " + withoutContent);
+
+            return withoutContent;
+        } catch (BadRequestError e) {
             log.error(ErrorMessages.FILE_CANNOT_BE_UPDATED + " {}", e.getMessage());
             throw new FileCannotBeUpdatedError(e.getMessage());
         }

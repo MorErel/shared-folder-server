@@ -75,11 +75,9 @@ public class FileHttpController {
     // TODO - add validations - json schema validation
     @PutMapping("{id}")
     public ResponseEntity<FileDto> updateName(@PathVariable UUID id, @RequestBody FileDto file) {
-        File fileDb = fileService.toDb(file);
-        fileDb.setId(id);
-        File updatedFile = fileService.updateName(fileDb);
-        FileDto updatedDto = fileService.toDto(updatedFile);
+        file.setId(id);
+        FileDto updatedFile = fileService.updateName(file);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(updatedDto);
+                .body(updatedFile);
     }
 }
