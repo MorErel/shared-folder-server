@@ -1,0 +1,19 @@
+{
+  "preRequest": {
+    "path": "/1.0/files",
+    "method": "POST",
+    "body": {
+      "name": "testFile.zip",
+      "content": "ARlEAA=="
+    }
+  },
+  "expectedResult": {
+    "data": null,
+    "errors": [
+      {
+        "name": "FileNameAlreadyExistsError",
+        "message": "file with the name testFile.zip already exists"
+      }
+    ]
+  }
+}
