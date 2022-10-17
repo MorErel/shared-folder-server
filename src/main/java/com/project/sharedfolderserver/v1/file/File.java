@@ -41,7 +41,6 @@ public class File {
     private byte[] content;
     @Column
     private String size;
-    // TODO flyway
 
     public void setKind() {
         this.kind = extractKind();

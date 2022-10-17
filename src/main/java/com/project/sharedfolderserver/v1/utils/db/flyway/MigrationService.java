@@ -50,7 +50,7 @@ public class MigrationService {
         }
     }
 
-    //todo: multi-tenancy
+    //todo: if there's time - multi-tenancy
     private List<String> getAllTenants() {
         return List.of("public");
     }
