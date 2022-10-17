@@ -24,7 +24,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-@RequestMapping(path = "api/v1/file")
+@RequestMapping(path = "/1.0/files")
 public class FileHttpController {
     private final FileService fileService;
     private final ValidationService validationService;

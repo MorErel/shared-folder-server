@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -29,11 +30,11 @@ public class File {
     @Setter(AccessLevel.PACKAGE)
     @UpdateTimestamp
     @Column
-    private LocalDateTime dateModified;
+    private Instant dateModified;
     @Setter(AccessLevel.PACKAGE)
     @CreationTimestamp
     @Column
-    private LocalDateTime dateAdded;
+    private Instant dateAdded;
     @Column
     private String kind;
     @Column

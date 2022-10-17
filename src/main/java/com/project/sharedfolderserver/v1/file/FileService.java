@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 // TODO controller advise,
-
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -55,8 +55,8 @@ public class FileService {
             File fileBeforeSaving = toDb(fileToSave);
             fileBeforeSaving.setSize();
             fileBeforeSaving.setKind();
-            fileBeforeSaving.setDateModified(FileUtils.getTimeStamp());
-            fileBeforeSaving.setDateAdded(FileUtils.getTimeStamp());
+            fileBeforeSaving.setDateModified(Instant.now());
+            fileBeforeSaving.setDateAdded(Instant.now());
             File savedFile = fileRepository.save(fileBeforeSaving);
             UUID savedID = savedFile.getId();
             log.info("saved file with id " + savedID);
@@ -71,7 +71,8 @@ public class FileService {
 
     public void delete(UUID id) {
         log.info("deleting file with id " + id);
-        findById(id);
+        findById(id)
+                .orElseThrow(()-> new FileNotFoundError(id));
         fileRepository.deleteById(id);
     }
 
@@ -89,7 +90,7 @@ public class FileService {
             log.info("name validated successfully");
 
             File fileBeforeSaving = toDb(fileDto);
-            fileBeforeSaving.setDateModified(FileUtils.getTimeStamp());
+            fileBeforeSaving.setDateModified(Instant.now());
             log.info("$$$$$$$$ " + fileDto.getDateAdded());
             fileBeforeSaving.setDateAdded(fileDto.getDateAdded());
             fileBeforeSaving.setName(newName);

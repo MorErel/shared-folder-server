@@ -1,0 +1,18 @@
+{
+  "preRequest": {
+    "path": "/1.0/files",
+    "method": "GET"
+  },
+  "expectedResult": {
+    "data": [
+      {
+        "id": "28cbd8e2-4b93-11ed-bdc3-0242ac120002",
+        "name": "testFile.zip",
+        "dateModified": 1436224954.000000000,
+        "dateAdded": 1436224954.000000000,
+        "kind": "zip",
+        "size": "0"
+      }
+    ]
+  }
+}
