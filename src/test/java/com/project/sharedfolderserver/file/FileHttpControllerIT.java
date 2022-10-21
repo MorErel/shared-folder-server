@@ -11,15 +11,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.util.CollectionUtils;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,18 +51,18 @@ public class FileHttpControllerIT extends BaseIT {
 
             ResponseEntity<Response<List<FileDto>>> response =
                     restTemplate.exchange(getUrl(preRequest.get("path").asText())
-                    , HttpMethod.valueOf(preRequest.get("method").asText())
-                    , null
-                    , new ParameterizedTypeReference<>() {
-                    });
+                            , HttpMethod.valueOf(preRequest.get("method").asText())
+                            , null
+                            , new ParameterizedTypeReference<>() {
+                            });
 
-            assertNotNull(response,"expect to have a response");
+            assertNotNull(response, "expect to have a response");
             Response<List<FileDto>> actualBody = response.getBody();
-            assertNotNull(actualBody,"expect to have a body in the response");
-            assertTrue(CollectionUtils.isEmpty(actualBody.getErrors()),"expect no errors");
+            assertNotNull(actualBody, "expect to have a body in the response");
+            assertTrue(CollectionUtils.isEmpty(actualBody.getErrors()), "expect no errors");
             List<FileDto> actualData = actualBody.getData();
-            assertNotNull(actualData,"expect to have file list in the response");
-            assertEquals(expectedData,actualData, "expect the same file list");
+            assertNotNull(actualData, "expect to have file list in the response");
+            assertEquals(expectedData, actualData, "expect the same file list");
 
 
         }

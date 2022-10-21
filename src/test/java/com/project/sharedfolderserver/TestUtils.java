@@ -9,9 +9,9 @@ import java.io.IOException;
 
 public class TestUtils {
 
-   public static JsonNode getTestCase(String filename) throws IOException {
-       File file=new ClassPathResource(String.format("/cases/%s.json",filename)).getFile();
-       return JSON.objectMapper.readTree(file);
-   }
+    public static JsonNode getTestCase(String filename) throws IOException {
+        File file = new ClassPathResource(String.format("/cases/%s.json", filename)).getFile();
+        return JSON.objectMapper.readTree(file);
+    }
 
 }

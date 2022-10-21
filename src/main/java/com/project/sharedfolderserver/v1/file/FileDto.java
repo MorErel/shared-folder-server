@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -27,8 +26,8 @@ public class FileDto {
     private String size;
     @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private byte[] content;
-    public FileDto(UUID id, String name, Instant dateModified, Instant dateAdded, String kind, String size)
-    {
+
+    public FileDto(UUID id, String name, Instant dateModified, Instant dateAdded, String kind, String size) {
         this.id = id;
         this.name = name;
         this.dateModified = dateModified;

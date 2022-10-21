@@ -1,12 +1,8 @@
 package com.project.sharedfolderserver.v1.file;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.project.sharedfolderserver.v1.file.exception.FileNotFoundError;
 import com.project.sharedfolderserver.v1.utils.JsonSchema;
-import com.project.sharedfolderserver.v1.utils.json.JsonUtil;
 import com.project.sharedfolderserver.v1.utils.validation.json.Validate;
-import com.project.sharedfolderserver.v1.utils.validation.json.ValidationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,7 +21,6 @@ import java.util.UUID;
 public class FileHttpController {
     private final FileService fileService;
 
-    // TODO - if there's time - interseptor that gets the File object and wraps  -   public ResponseEntity<Response<FILE DTO>> interseptor (Object o)
     @GetMapping
     public ResponseEntity<List<FileDto>> list() {
         List<FileDto> files = fileService.list();
@@ -34,8 +29,6 @@ public class FileHttpController {
     }
 
     @PostMapping
-    //todo - if there's time
-    //@RequestValidator("src/main/resources/schemas/file/create.json")
     public ResponseEntity<FileDto> create(@RequestBody @Validate(JsonSchema.FILE_CREATE) FileDto fileToAdd) {
         log.info("in create, request body: " + fileToAdd);
         FileDto addedFile = fileService.create(fileToAdd);
