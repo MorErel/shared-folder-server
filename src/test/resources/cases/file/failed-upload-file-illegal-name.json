@@ -3,7 +3,7 @@
     "path": "/1.0/files",
     "method": "POST",
     "body": {
-      "name": "badname",
+      "name": "bad^$#name",
       "content": "ARlEAA=="
     }
   },
@@ -12,7 +12,7 @@
     "errors": [
       {
         "name": "FileCannotBeCreatedError",
-        "message": "Illegal file name %s, file name must be in the form of NAME.KIND using number, letters, dashes and underscores"
+        "message": "file could not be created. Illegal file name bad^$#name, file name must be in the form of NAME.KIND, using letters, numbers. some special characters are illegal"
       }
     ]
   }

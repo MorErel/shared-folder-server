@@ -34,8 +34,6 @@ public class FileHttpController {
     }
 
     @PostMapping
-    //todo - if there's time
-    //@RequestValidator("src/main/resources/schemas/file/create.json")
     public ResponseEntity<FileDto> create(@RequestBody @Validate(JsonSchema.FILE_CREATE) FileDto fileToAdd) {
         log.info("in create, request body: " + fileToAdd);
         FileDto addedFile = fileService.create(fileToAdd);

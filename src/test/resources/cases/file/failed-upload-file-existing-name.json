@@ -11,8 +11,8 @@
     "data": null,
     "errors": [
       {
-        "name": "FileNameAlreadyExistsError",
-        "message": "file with the name testFile.zip already exists"
+        "name": "FileCannotBeCreatedError",
+        "message": "file could not be created. file with the name testFile.zip already exists"
       }
     ]
   }
