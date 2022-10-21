@@ -12,21 +12,33 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @Slf4j
 @Service
 public class ValidationService {
+    private final Map<String, JsonSchema> schemaCache = new HashMap<>();
     public void validate(JsonNode jsonNode, String path) {
-        log.info("validating schema: ");
-        JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
-        JsonSchema jsonSchema = null;
-        try {
-            jsonSchema = factory.getSchema(new URI("classpath:" + path));
-        } catch (URISyntaxException e) {
-            log.error(e.getMessage());
+        log.debug("validating schema: {}", path);
+        if (path == null) {
+            log.error("Could not resolve json schema path, null");
+            throw new ValidationError("JsonSchema path is null");
         }
-        Set<ValidationMessage> errors = jsonSchema.validate(jsonNode);
+        JsonSchema jsonSchemaToValidate =  schemaCache.computeIfAbsent(path, p -> {
+            JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
+            try {
+                JsonSchema jsonSchema = factory.getSchema(new URI("classpath:" + path));
+                schemaCache.put(path,jsonSchema);
+                return jsonSchema;
+            } catch (Exception e) {
+                log.error("Could not load json schema: {}",e.getMessage());
+                throw new ValidationError(String.format("Could not load json schema: %s",e.getMessage()));
+            }
+        });
+
+        Set<ValidationMessage> errors = jsonSchemaToValidate.validate(jsonNode);
         log.info("errors: " + errors);
         if (!errors.isEmpty()) {
             throw new ValidationError(errors.toString());

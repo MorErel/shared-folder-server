@@ -3,7 +3,9 @@ package com.project.sharedfolderserver.v1.file;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.project.sharedfolderserver.v1.file.exception.FileNotFoundError;
+import com.project.sharedfolderserver.v1.utils.JsonSchema;
 import com.project.sharedfolderserver.v1.utils.json.JsonUtil;
+import com.project.sharedfolderserver.v1.utils.validation.json.Validate;
 import com.project.sharedfolderserver.v1.utils.validation.json.ValidationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,6 @@ import java.util.UUID;
 @RequestMapping(path = "/1.0/files")
 public class FileHttpController {
     private final FileService fileService;
-    private final ValidationService validationService;
 
     // TODO - if there's time - interseptor that gets the File object and wraps  -   public ResponseEntity<Response<FILE DTO>> interseptor (Object o)
     @GetMapping
@@ -35,11 +36,8 @@ public class FileHttpController {
     @PostMapping
     //todo - if there's time
     //@RequestValidator("src/main/resources/schemas/file/create.json")
-    public ResponseEntity<FileDto> create(@RequestBody JsonNode file) {
-        log.info("in create, request body: " + file);
-        validationService.validate(file, "schemas/file/create.json");
-        FileDto fileToAdd = JsonUtil.mapper.convertValue(file, new TypeReference<>() {
-        });
+    public ResponseEntity<FileDto> create(@RequestBody @Validate(JsonSchema.FILE_CREATE) FileDto fileToAdd) {
+        log.info("in create, request body: " + fileToAdd);
         FileDto addedFile = fileService.create(fileToAdd);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(addedFile);
@@ -61,10 +59,7 @@ public class FileHttpController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<FileDto> updateName(@PathVariable UUID id, @RequestBody JsonNode file) {
-        validationService.validate(file, "schemas/file/update.json");
-        FileDto fileToUpdate = JsonUtil.mapper.convertValue(file, new TypeReference<>() {
-        });
+    public ResponseEntity<FileDto> updateName(@PathVariable UUID id, @RequestBody @Validate(JsonSchema.FILE_UPDATE) FileDto fileToUpdate) {
         fileToUpdate.setId(id);
         FileDto updatedFile = fileService.updateName(fileToUpdate);
         return ResponseEntity.status(HttpStatus.OK)
