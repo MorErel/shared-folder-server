@@ -1,26 +1,16 @@
 package com.project.sharedfolderserver.v1.file;
 
-import com.project.sharedfolderserver.v1.file.exception.FileCannotBeCreatedError;
 import com.project.sharedfolderserver.v1.file.exception.FileNameAlreadyExistsError;
 import com.project.sharedfolderserver.v1.file.exception.FileNameCannotBeEmpty;
 import com.project.sharedfolderserver.v1.file.exception.IllegalFileName;
 import com.project.sharedfolderserver.v1.utils.error.ErrorMessages;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.StringUtils;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @RequiredArgsConstructor
 public class FileUtils {
-
-    public static LocalDateTime getTimeStamp() {
-        return LocalDate.now().atTime(LocalTime.now());
-    }
 
     public static void validateFileName(String name, FileRepository fileRepository) {
         log.info("validating file name");

@@ -7,6 +7,7 @@ public class FileCannotBeUpdatedError extends BadRequestError {
     public FileCannotBeUpdatedError() {
         super(ErrorMessages.FILE_CANNOT_BE_UPDATED);
     }
+
     public FileCannotBeUpdatedError(String error) {
         super(String.format(ErrorMessages.FILE_CANNOT_BE_UPDATED, error));
     }

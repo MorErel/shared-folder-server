@@ -11,8 +11,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
 import java.time.Instant;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -71,7 +75,7 @@ public class FileService {
     public void delete(UUID id) {
         log.info("deleting file with id " + id);
         findById(id)
-                .orElseThrow(()-> new FileNotFoundError(id));
+                .orElseThrow(() -> new FileNotFoundError(id));
         fileRepository.deleteById(id);
     }
 
