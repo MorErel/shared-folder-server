@@ -2,9 +2,7 @@ package com.project.sharedfolderserver.file;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.project.sharedfolderserver.BaseIT;
 import com.project.sharedfolderserver.TestUtils;
@@ -26,11 +24,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.util.CollectionUtils;
 
-import javax.swing.text.html.Option;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,8 +43,6 @@ public class FileHttpControllerIT extends BaseIT {
         preRequest = null;
         expectedResult = null;
     }
-
-    // todo - tests for each endpoint
 
     @Nested
     class Get {
@@ -202,12 +195,11 @@ public class FileHttpControllerIT extends BaseIT {
             String errorMessage;
             if (badname == null || badname.isEmpty()) {
                 errorMessage = "file could not be created. file name can not be empty";
-            }
-            else {
+            } else {
                 errorMessage = String.format("file could not be created. Illegal file name %s, file name must be in the form of NAME.KIND, using letters, numbers. some special characters are illegal", badname);
             }
             expectedErrors.stream().findFirst().ifPresent(error -> error.setMessage(errorMessage));
-            ((ObjectNode)(preRequest.get("body"))).put("name", badname);
+            ((ObjectNode) (preRequest.get("body"))).put("name", badname);
 
             ResponseEntity<Response<FileDto>> response =
                     restTemplate.exchange(getUrl(preRequest.get("path").asText())
@@ -233,7 +225,7 @@ public class FileHttpControllerIT extends BaseIT {
             List<Error> expectedErrors = JSON.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
             });
             Error expectedError = expectedErrors.stream().findFirst().orElseThrow();
-            ((ObjectNode)(preRequest.get("body"))).set(fieldName, illegalFieldContent);
+            ((ObjectNode) (preRequest.get("body"))).set(fieldName, illegalFieldContent);
             expectedError.setMessage(expectedError.getMessage().replace(FIELD_NAME_REPLACE_SIGN, fieldName).replace(TYPE_NAME_REPLACE_SIGN, errorMessage));
 
             ResponseEntity<Response<FileDto>> response =
@@ -256,10 +248,10 @@ public class FileHttpControllerIT extends BaseIT {
             return Stream.of(
                     Arguments.of("name", null, "null"),
                     Arguments.of("content", null, "null"),
-                    Arguments.of("content",JSON.objectMapper.createArrayNode(), "array"),
-                    Arguments.of("name",JSON.objectMapper.createArrayNode(), "array"),
+                    Arguments.of("content", JSON.objectMapper.createArrayNode(), "array"),
+                    Arguments.of("name", JSON.objectMapper.createArrayNode(), "array"),
                     Arguments.of("content", new IntNode(8), "integer"),
-                    Arguments.of("name",new IntNode(8), "integer")
+                    Arguments.of("name", new IntNode(8), "integer")
             );
         }
 
