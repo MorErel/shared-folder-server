@@ -3,7 +3,7 @@
     "path": "/1.0/files",
     "method": "POST",
     "body": {
-      "name": "bad^$#name",
+      "name": "",
       "content": "ARlEAA=="
     }
   },

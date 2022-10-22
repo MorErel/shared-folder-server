@@ -2,6 +2,7 @@ package com.project.sharedfolderserver.file;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.project.sharedfolderserver.BaseIT;
 import com.project.sharedfolderserver.TestUtils;
 import com.project.sharedfolderserver.v1.file.FileDto;
@@ -12,6 +13,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -94,8 +98,8 @@ public class FileHttpControllerIT extends BaseIT {
             assertNotNull(actualBody, "expect to have a body in the response");
             assertTrue(CollectionUtils.isEmpty(actualBody.getErrors()), "expect no errors");
             FileDto actualData = actualBody.getData();
-            assertNotNull(actualData, "expect to have file list in the response");
-            assertEquals(expectedData, actualData, "expect the same file list");
+            assertNotNull(actualData, "expect to have a file in the response");
+            assertEquals(expectedData, actualData, "expect the get a file with content");
         }
 
         @DisplayName("Failed: Download file")
@@ -181,11 +185,22 @@ public class FileHttpControllerIT extends BaseIT {
         }
 
         @DisplayName("Failed: upload file with illegal name")
-        @Test
-        void failedUploadIllegalName() throws IOException {
+        @ParameterizedTest
+        @NullAndEmptySource
+        @ValueSource(strings = {"badname", "usik^*.ld", "=-0", " ggg.file.s"})
+        void failedUploadIllegalName(String badname) throws IOException {
             initializeCaseTest("file/failed-upload-file-illegal-name");
             List<Error> expectedErrors = JSON.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
             });
+            String errorMessage;
+            if (badname == null || badname.isEmpty()) {
+                errorMessage = "file could not be created. file name can not be empty";
+            }
+            else {
+                errorMessage = String.format("file could not be created. Illegal file name %s, file name must be in the form of NAME.KIND, using letters, numbers. some special characters are illegal", badname);
+            }
+            expectedErrors.get(0).setMessage(errorMessage);
+            ((ObjectNode)(preRequest.get("body"))).put("name", badname);
 
             ResponseEntity<Response<FileDto>> response =
                     restTemplate.exchange(getUrl(preRequest.get("path").asText())
