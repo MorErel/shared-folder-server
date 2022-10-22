@@ -1,12 +1,10 @@
 package com.project.sharedfolderserver.v1.file;
 
-import com.project.sharedfolderserver.utils.http.error.BadRequestError;
 import com.project.sharedfolderserver.v1.file.exception.*;
 import com.project.sharedfolderserver.v1.utils.error.ErrorMessages;
 import com.project.sharedfolderserver.v1.utils.model.EntityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -45,7 +43,8 @@ public class FileService {
             File savedFile = fileRepository.save(fileBeforeSaving);
             UUID savedID = savedFile.getId();
             log.debug("saved file with id " + savedID);
-            FileDto withoutContent = findByIdWithoutContent(savedID).orElseThrow(() -> new FileCannotBeCreatedError("could not retrieve file without content after saving"));
+            savedFile.setContent(null);
+            FileDto withoutContent = toDto(savedFile);
             log.debug("fileDtoWithoutContent: " + withoutContent);
             return withoutContent;
         } catch (Exception e) {
@@ -82,10 +81,12 @@ public class FileService {
             fileBeforeSaving.setDateModified(Instant.now());
             fileBeforeSaving.setDateAdded(fileDto.getDateAdded());
             fileBeforeSaving.setName(newName);
+            fileBeforeSaving.setKind();
             File savedFile = fileRepository.save(fileBeforeSaving);
             UUID savedID = savedFile.getId();
             log.debug("updated file with id " + savedID);
-            FileDto withoutContent = findByIdWithoutContent(savedID).orElseThrow(() -> new FileCannotBeUpdatedError("could not retrieve file without content after saving"));
+            savedFile.setContent(null);
+            FileDto withoutContent = toDto(savedFile);
             log.debug("fileDtoWithoutContent: " + withoutContent);
 
             return withoutContent;
@@ -96,21 +97,17 @@ public class FileService {
     }
 
     public Optional<FileDto> findById(UUID id) {
-        log.info("findById");
+        log.trace("findById");
         return fileRepository.findById(id).map(this::toDto);
     }
 
-    public Optional<FileDto> findByIdWithoutContent(UUID id) {
-        return fileRepository.findByIdWithoutContent(id);
-    }
-
     public FileDto toDto(File file) {
-        log.info("to Dto");
+        log.trace("to Dto");
         return (FileDto) entityUtil.convert(file, FileDto.class);
     }
 
     public File toDb(FileDto fileDto) {
-        log.info("to db");
+        log.trace("to db");
         return (File) entityUtil.convert(fileDto, File.class);
     }
 }
