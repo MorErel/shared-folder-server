@@ -34,7 +34,7 @@ public class FileHttpController {
     }
 
     @PostMapping
-    public ResponseEntity<FileDto> create(@RequestBody @Validate(JsonSchema.FILE_CREATE) FileDto fileToAdd) {
+    public ResponseEntity<FileDto> create(@Validate(JsonSchema.FILE_CREATE) @RequestBody FileDto fileToAdd) {
         log.info("in create, request body: " + fileToAdd);
         FileDto addedFile = fileService.create(fileToAdd);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -57,7 +57,7 @@ public class FileHttpController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<FileDto> updateName(@PathVariable UUID id, @RequestBody @Validate(JsonSchema.FILE_UPDATE) FileDto fileToUpdate) {
+    public ResponseEntity<FileDto> updateName(@PathVariable UUID id, @Validate(JsonSchema.FILE_UPDATE) FileDto fileToUpdate) {
         fileToUpdate.setId(id);
         FileDto updatedFile = fileService.updateName(fileToUpdate);
         return ResponseEntity.status(HttpStatus.OK)
