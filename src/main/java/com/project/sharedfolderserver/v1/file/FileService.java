@@ -48,7 +48,7 @@ public class FileService {
             FileDto withoutContent = findByIdWithoutContent(savedID).orElseThrow(() -> new FileCannotBeCreatedError("could not retrieve file without content after saving"));
             log.debug("fileDtoWithoutContent: " + withoutContent);
             return withoutContent;
-        } catch (BadRequestError e) {
+        } catch (Exception e) {
             log.error(ErrorMessages.FILE_CANNOT_BE_CREATED_ERROR_MESSAGE + " {}", e.getMessage());
             throw new FileCannotBeCreatedError(ErrorMessages.FILE_CANNOT_BE_CREATED_ERROR_MESSAGE + e.getMessage());
         }
@@ -60,7 +60,7 @@ public class FileService {
                 .orElseThrow(() -> new FileNotFoundError(id));
         try {
             fileRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
+        } catch (Exception e) {
             throw new FileCannotBeDeletedError(e.getMessage());
         }
     }
@@ -89,7 +89,7 @@ public class FileService {
             log.debug("fileDtoWithoutContent: " + withoutContent);
 
             return withoutContent;
-        } catch (BadRequestError e) {
+        } catch (Exception e) {
             log.error(ErrorMessages.FILE_CANNOT_BE_UPDATED + " {}", e.getMessage());
             throw new FileCannotBeUpdatedError(e.getMessage());
         }
