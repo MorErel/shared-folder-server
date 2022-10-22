@@ -2,6 +2,9 @@ package com.project.sharedfolderserver.file;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.project.sharedfolderserver.BaseIT;
 import com.project.sharedfolderserver.TestUtils;
@@ -9,14 +12,12 @@ import com.project.sharedfolderserver.v1.file.FileDto;
 import com.project.sharedfolderserver.v1.utils.error.Error;
 import com.project.sharedfolderserver.v1.utils.http.Response;
 import com.project.sharedfolderserver.v1.utils.json.JSON;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -24,12 +25,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.util.CollectionUtils;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -134,8 +136,13 @@ public class FileHttpControllerIT extends BaseIT {
         }
     }
 
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     @Nested
     class Post {
+
+        public static final String FIELD_NAME_REPLACE_SIGN = "%fieldName%";
+        public static final String TYPE_NAME_REPLACE_SIGN = "%typeName%";
+
 
         @DisplayName("Success: upload file")
         @Test
@@ -199,7 +206,7 @@ public class FileHttpControllerIT extends BaseIT {
             else {
                 errorMessage = String.format("file could not be created. Illegal file name %s, file name must be in the form of NAME.KIND, using letters, numbers. some special characters are illegal", badname);
             }
-            expectedErrors.get(0).setMessage(errorMessage);
+            expectedErrors.stream().findFirst().ifPresent(error -> error.setMessage(errorMessage));
             ((ObjectNode)(preRequest.get("body"))).put("name", badname);
 
             ResponseEntity<Response<FileDto>> response =
@@ -219,11 +226,15 @@ public class FileHttpControllerIT extends BaseIT {
         }
 
         @DisplayName("Failed: upload file with illegal content")
-        @Test
-        void failedUploadIllegalContent() throws IOException {
+        @ParameterizedTest
+        @MethodSource("generateIllegalUploadRequestParameters")
+        void failedUploadIllegalRequestParameters(String fieldName, JsonNode illegalFieldContent, String errorMessage) throws IOException {
             initializeCaseTest("file/failed-upload-file-illegal-content");
             List<Error> expectedErrors = JSON.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
             });
+            Error expectedError = expectedErrors.stream().findFirst().orElseThrow();
+            ((ObjectNode)(preRequest.get("body"))).set(fieldName, illegalFieldContent);
+            expectedError.setMessage(expectedError.getMessage().replace(FIELD_NAME_REPLACE_SIGN, fieldName).replace(TYPE_NAME_REPLACE_SIGN, errorMessage));
 
             ResponseEntity<Response<FileDto>> response =
                     restTemplate.exchange(getUrl(preRequest.get("path").asText())
@@ -241,11 +252,21 @@ public class FileHttpControllerIT extends BaseIT {
             assertEquals(expectedErrors, actualBody.getErrors(), "expected the same errors");
         }
 
+        private Stream<Arguments> generateIllegalUploadRequestParameters() {
+            return Stream.of(
+                    Arguments.of("name", null, "null"),
+                    Arguments.of("content", null, "null"),
+                    Arguments.of("content",JSON.objectMapper.createArrayNode(), "array"),
+                    Arguments.of("name",JSON.objectMapper.createArrayNode(), "array"),
+                    Arguments.of("content", new IntNode(8), "integer"),
+                    Arguments.of("name",new IntNode(8), "integer")
+            );
+        }
+
         private void initializeCaseTest(String caseName) throws IOException {
             caseObject = TestUtils.getTestCase(caseName);
             preRequest = caseObject.get("preRequest");
             expectedResult = caseObject.get("expectedResult");
         }
     }
-
 }

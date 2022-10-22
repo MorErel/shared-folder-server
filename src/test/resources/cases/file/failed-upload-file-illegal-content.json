@@ -4,7 +4,7 @@
     "method": "POST",
     "body": {
       "name": "testFile.txt",
-      "content": []
+      "content": ""
     }
   },
   "expectedResult": {
@@ -12,7 +12,7 @@
     "errors": [
       {
         "name": "ValidationError",
-        "message": "validation error [$.content: array found, string expected]"
+        "message": "validation error [$.%fieldName%: %typeName% found, string expected]"
       }
     ]
   }

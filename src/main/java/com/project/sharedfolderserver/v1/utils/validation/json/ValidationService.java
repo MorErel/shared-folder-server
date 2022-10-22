@@ -30,14 +30,13 @@ public class ValidationService {
             JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
             try {
                 JsonSchema jsonSchema = factory.getSchema(new URI("classpath:" + path));
-                schemaCache.put(path,jsonSchema);
                 return jsonSchema;
             } catch (Exception e) {
                 log.error("Could not load json schema: {}",e.getMessage());
                 throw new ValidationError(String.format("Could not load json schema: %s",e.getMessage()));
             }
         });
-
+        schemaCache.putIfAbsent(path,jsonSchemaToValidate);
         Set<ValidationMessage> errors = jsonSchemaToValidate.validate(jsonNode);
         log.info("errors: " + errors);
         if (!errors.isEmpty()) {
