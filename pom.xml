@@ -83,6 +83,7 @@
     </dependencies>
 
 	<build>
+		<finalName>shared-folder-server</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
