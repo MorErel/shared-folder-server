@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class FileUtils {
 
+    // this regex ensures the name of the file will not consist the special characters !;.@#$%^&*(){}?<>`|=\ , then followed by 1 dot
+    // after the dot - the suffix will be a legal file kind contains letters and number only
     private final static String regex = "^[^!;.@#$%^&*()\\{\\}?<>`|=\\\\]+\\.{1}[a-zA-Z0-9]+$";
 
     public static void validateFileName(String name, FileRepository fileRepository) {
