@@ -24,13 +24,12 @@ public class FileUtils {
             throw new FileNameCannotBeEmpty();
         }
         if (!Pattern.matches(regex, name)) {
-            log.error(ErrorMessages.ILLEGAL_FILE_NAME);
+            log.error(ErrorMessages.ILLEGAL_FILE_NAME + name);
             throw new IllegalFileName(name);
         }
-        fileRepository.findByName(name)
-                .ifPresent(file -> {
-                    log.error(ErrorMessages.FILE_NAME_ALREADY_EXISTS);
-                    throw new FileNameAlreadyExistsError(name);
-                });
+        if(fileRepository.countByName(name)>0) {
+            log.error(ErrorMessages.FILE_NAME_ALREADY_EXISTS + name);
+            throw new FileNameAlreadyExistsError(name);
+        }
     }
 }
