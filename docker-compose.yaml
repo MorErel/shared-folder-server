@@ -11,7 +11,7 @@ services:
             POSTGRES_PASSWORD: postgres
             POSTGRES_DB: file
     shared-folder-server:
-        image: sharedfolderserver:latest
+        image: eldarerel/sharedfolderserver:latest
         container_name: 'shared-folder-server'
         restart: always
         ports:
