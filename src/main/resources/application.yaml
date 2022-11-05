@@ -4,6 +4,10 @@ migration:
   baselineOnMigration: ${DB_MIGRATION_BASELINE_ENABLED:true}
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
   flyway:
     # should be disabled as we use our migration
     enabled: false

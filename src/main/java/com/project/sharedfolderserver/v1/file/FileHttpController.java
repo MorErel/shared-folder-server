@@ -6,10 +6,14 @@ import com.project.sharedfolderserver.v1.utils.validation.json.Validate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,20 +32,22 @@ public class FileHttpController {
                 body(files);
     }
 
-    @PostMapping
-    public ResponseEntity<FileDto> create(@Validate(JsonSchema.FILE_CREATE) FileDto fileToAdd) {
-        log.info("in create, request body: " + fileToAdd);
-        FileDto addedFile = fileService.create(fileToAdd);
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<FileDto> create (@RequestParam("file") MultipartFile file) throws IOException {
+        FileDto uploadedFile = new FileDto();
+        uploadedFile.setName(file.getOriginalFilename());
+        uploadedFile.setContent(file.getBytes());
+        log.info("in create, request body: " + uploadedFile);
+        FileDto addedFile = fileService.create(uploadedFile);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(addedFile);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<FileDto> download(@PathVariable UUID id) {
+    public StreamingResponseBody download(@PathVariable UUID id) {
         FileDto file = fileService.findById(id)
                 .orElseThrow(() -> new FileNotFoundError(id));
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(file);
+        return outputStream -> outputStream.write(file.getContent());
     }
 
     @DeleteMapping("{id}")
