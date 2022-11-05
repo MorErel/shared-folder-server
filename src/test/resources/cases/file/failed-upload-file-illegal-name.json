@@ -1,0 +1,19 @@
+{
+  "preRequest": {
+    "path": "/1.0/files",
+    "method": "POST",
+    "body": {
+      "name": "",
+      "content": "ARlEAA=="
+    }
+  },
+  "expectedResult": {
+    "data": null,
+    "errors": [
+      {
+        "name": "FileCannotBeCreatedError",
+        "message": "file could not be created. Illegal file name bad^$#name, file name must be in the form of NAME.KIND, using letters, numbers. some special characters are illegal"
+      }
+    ]
+  }
+}

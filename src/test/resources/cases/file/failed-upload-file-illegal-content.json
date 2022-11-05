@@ -1,0 +1,19 @@
+{
+  "preRequest": {
+    "path": "/1.0/files",
+    "method": "POST",
+    "body": {
+      "name": "testFile.txt",
+      "content": ""
+    }
+  },
+  "expectedResult": {
+    "data": null,
+    "errors": [
+      {
+        "name": "ValidationError",
+        "message": "validation error [$.%fieldName%: %typeName% found, string expected]"
+      }
+    ]
+  }
+}

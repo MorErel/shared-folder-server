@@ -1,0 +1,17 @@
+{
+  "preRequest": {
+    "path": "/1.0/files/28cbd8e2-4b93-11ed-bdc3-0242ac120002",
+    "method": "GET"
+  },
+  "expectedResult": {
+    "data": {
+      "kind": "zip",
+      "content": "QVJsRUFBPT0=",
+      "id": "28cbd8e2-4b93-11ed-bdc3-0242ac120002",
+      "name": "testFile.zip",
+      "dateModified": 1436224954.000000000,
+      "dateAdded": 1436224954.000000000,
+      "size": "4 bytes"
+    }
+  }
+}

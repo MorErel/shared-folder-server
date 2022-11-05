@@ -13,6 +13,9 @@ import javax.validation.constraints.Pattern;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
+
+
 @Data
 @Entity
 @Table
@@ -22,7 +25,6 @@ public class File {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     @Column(unique = true)
-    @Pattern(regexp = "^[a-zA-Z0-9_\\-]+\\.[a-zA-Z0-9_\\-]+$", message = "file name must be in the form of NAME.KIND using number, letters, dashes and underscores")
     private String name;
     @Setter(AccessLevel.PACKAGE)
     @UpdateTimestamp

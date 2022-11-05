@@ -1,0 +1,20 @@
+{
+  "preRequest": {
+    "path": "/1.0/files",
+    "method": "POST",
+    "body": {
+      "name": "testFile.zip",
+      "content": "ARlEAA=="
+    }
+  },
+  "expectedResult": {
+    "data": {
+      "kind": "zip",
+      "id": "b2599a8d-1daa-40da-a1a0-fddb396898a0",
+      "name": "testFile.zip",
+      "dateModified": "2022-10-17T08:29:13.096594Z",
+      "dateAdded": "2022-10-17T08:29:13.096553Z",
+      "size": "4 bytes"
+    }
+  }
+}

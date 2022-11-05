@@ -16,6 +16,11 @@ public interface FileRepository extends JpaRepository<File, UUID> {
     @Query(value = "SELECT new com.project.sharedfolderserver.v1.file.FileDto(id, name, dateModified, dateAdded, kind, size) FROM File file WHERE file.id = :uuid")
     Optional<FileDto> findByIdWithoutContent(@Param("uuid") UUID uuid);
 
+
+    long countByName(String name);
+
     @Query(value = "SELECT new com.project.sharedfolderserver.v1.file.FileDto(id, name, dateModified, dateAdded, kind, size) FROM File file")
     List<FileDto> findAllWithoutContent();
+
+
 }

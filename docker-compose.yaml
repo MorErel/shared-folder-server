@@ -4,9 +4,19 @@ services:
         image: postgres:14.0
         container_name: 'postgresdb'
         restart: always
-        ports:  
+        ports:
             - "5432:5432"
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
             POSTGRES_DB: file
+    shared-folder-server:
+        image: eldarerel/shared-folder-server:latest
+        container_name: 'shared-folder-server'
+        restart: always
+        ports:
+            - "8080:8080"
+        environment:
+            DB_URL: jdbc:postgresql://postgres:5432/file
+            DB_USERNAME: postgres
+            DB_PASSWORD: postgres
