@@ -9,9 +9,7 @@ import com.project.sharedfolderserver.v1.file.exception.ValidationError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -20,20 +18,21 @@ import java.util.Set;
 @Service
 public class ValidationService {
     private final Map<String, JsonSchema> schemaCache = new HashMap<>();
+
     public void validate(JsonNode jsonNode, String path) {
         log.debug("validating schema: {}", path);
         if (path == null) {
             log.error("Could not resolve json schema path, null");
             throw new ValidationError("JsonSchema path is null");
         }
-        JsonSchema jsonSchemaToValidate =  schemaCache.computeIfAbsent(path, p -> {
+        JsonSchema jsonSchemaToValidate = schemaCache.computeIfAbsent(path, p -> {
             JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
             try {
                 JsonSchema jsonSchema = factory.getSchema(new URI("classpath:" + path));
                 return jsonSchema;
             } catch (Exception e) {
-                log.error("Could not load json schema: {}",e.getMessage());
-                throw new ValidationError(String.format("Could not load json schema: %s",e.getMessage()));
+                log.error("Could not load json schema: {}", e.getMessage());
+                throw new ValidationError(String.format("Could not load json schema: %s", e.getMessage()));
             }
         });
         schemaCache.putIfAbsent(path,jsonSchemaToValidate);
