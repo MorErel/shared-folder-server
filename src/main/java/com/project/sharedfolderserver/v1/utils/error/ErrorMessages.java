@@ -11,4 +11,5 @@ public interface ErrorMessages {
     String FILE_NOT_FOUND = "file with id %s does not exist";
     String UNEXPECTED_ERROR = "unexpected error %s";
     String REQUEST_VALIDATION_ERROR = "validation error %s";
+    String FILE_CONTENT_CANT_BE_CHANGED = "File content cant be changed";
 }

@@ -1,15 +1,13 @@
 package com.project.sharedfolderserver;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.project.sharedfolderserver.v1.file.FileDto;
-import com.project.sharedfolderserver.v1.utils.json.JSON;
+import com.project.sharedfolderserver.v1.utils.json.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,7 +18,7 @@ public class TestUtils {
 
     public static JsonNode getTestCase(String filename) throws IOException {
         File file = new ClassPathResource(String.format("/cases/%s.json", filename)).getFile();
-        return JSON.objectMapper.readTree(file);
+        return JsonUtil.objectMapper.readTree(file);
     }
 
     public static <T> void assertEqualsExcludedFields(T expectedData, T actualData, String... excludedFields) throws IllegalAccessException {

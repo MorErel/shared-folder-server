@@ -7,6 +7,9 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
+/**
+ *  Custom annotation to mark parameter that needed to be validated (Json Schema)
+ */
 public @interface Validate {
     String value();
 }

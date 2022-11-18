@@ -1,8 +1,8 @@
 package com.project.sharedfolderserver.v1.utils.validation.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.project.sharedfolderserver.v1.file.exception.ValidationError;
-import com.project.sharedfolderserver.v1.utils.json.JSON;
+import com.project.sharedfolderserver.v1.file.exception.FileValidationError;
+import com.project.sharedfolderserver.v1.utils.json.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
@@ -19,6 +19,10 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+/**
+ * Interceptor to intercept controller method using @Validate on a parameter
+ * It pass it in Validator service and throws exception if the object schemas doesn't match
+ */
 public class ValidatedRequestBodyInterceptor implements HandlerMethodArgumentResolver {
 
     private final ValidationService validationService;
@@ -38,20 +42,20 @@ public class ValidatedRequestBodyInterceptor implements HandlerMethodArgumentRes
         validationService.validate(jsonBody, jsonSchemaPath);
         Class<?> objectType = parameter.getParameterType();
         log.debug("Success validate object [{}]", objectType);
-        return JSON.objectMapper.treeToValue(jsonBody, objectType);
+        return JsonUtil.objectMapper.treeToValue(jsonBody, objectType);
     }
 
     private JsonNode getJsonPayload(NativeWebRequest nativeWebRequest) throws IOException {
         if (nativeWebRequest == null) {
             log.error("Native request is null, can't validate");
-            throw new ValidationError("Request is null, can't validate");
+            throw new FileValidationError("Request is null, can't validate");
         }
         HttpServletRequest httpServletRequest = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
         if (httpServletRequest == null) {
             log.error("Http servlet request is null, can't validate");
-            throw new ValidationError("Request is null, can't validate");
+            throw new FileValidationError("Request is null, can't validate");
         }
-        return JSON.objectMapper.readTree(httpServletRequest.getInputStream());
+        return JsonUtil.objectMapper.readTree(httpServletRequest.getInputStream());
 
     }
 }

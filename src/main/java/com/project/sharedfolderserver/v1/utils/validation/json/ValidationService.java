@@ -5,7 +5,7 @@ import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
-import com.project.sharedfolderserver.v1.file.exception.ValidationError;
+import com.project.sharedfolderserver.v1.file.exception.FileValidationError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,9 @@ import java.util.Set;
 
 @Slf4j
 @Service
+/**
+ * Validate json object with json schema
+ */
 public class ValidationService {
     private final Map<String, JsonSchema> schemaCache = new HashMap<>();
 
@@ -23,7 +26,7 @@ public class ValidationService {
         log.debug("validating schema: {}", path);
         if (path == null) {
             log.error("Could not resolve json schema path, null");
-            throw new ValidationError("JsonSchema path is null");
+            throw new FileValidationError("JsonSchema path is null");
         }
         JsonSchema jsonSchemaToValidate = schemaCache.computeIfAbsent(path, p -> {
             JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
@@ -32,14 +35,14 @@ public class ValidationService {
                 return jsonSchema;
             } catch (Exception e) {
                 log.error("Could not load json schema: {}", e.getMessage());
-                throw new ValidationError(String.format("Could not load json schema: %s", e.getMessage()));
+                throw new FileValidationError(String.format("Could not load json schema: %s", e.getMessage()));
             }
         });
         schemaCache.putIfAbsent(path,jsonSchemaToValidate);
         Set<ValidationMessage> errors = jsonSchemaToValidate.validate(jsonNode);
         log.info("errors: " + errors);
         if (!errors.isEmpty()) {
-            throw new ValidationError(errors.toString());
+            throw new FileValidationError(errors.toString());
         }
     }
 }

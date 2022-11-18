@@ -5,13 +5,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+/**
+ * Entity utils
+ */
 public class EntityUtil {
 
     public final static ModelMapper mapper = new ModelMapper();
 
-    public <T> Object convert(T object, Class<?> clazz) {
-        log.info("converting " + object + " to " + clazz);
+    public static <T,U> U convert(T object, Class<U> clazz) {
+        log.debug("converting {} to {}", object, clazz);
         return mapper.map(object, clazz);
     }
 }

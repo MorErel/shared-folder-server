@@ -7,6 +7,9 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+/**
+ * Custom class annotation to wrap http response with Response.class object
+ */
 public @interface ResponseWrapper {
 
 }

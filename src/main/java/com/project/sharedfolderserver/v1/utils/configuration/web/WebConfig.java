@@ -12,11 +12,15 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 @RequiredArgsConstructor
+/**
+ * Web config
+ */
 public class WebConfig implements WebMvcConfigurer {
 
     private final ValidatedRequestBodyInterceptor validatedRequestBodyInterceptor;
     @Override
     public void addArgumentResolvers(
+            // register validate request body within spring context
             List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(validatedRequestBodyInterceptor);
     }

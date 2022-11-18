@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "migration")
 @Data
+/**
+ * Class for migration application properties
+ */
 public class MigrationProperties {
     private String schemasPath;
     private boolean enabled;

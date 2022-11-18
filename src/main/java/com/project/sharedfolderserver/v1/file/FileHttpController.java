@@ -15,12 +15,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @RestController
 @RequiredArgsConstructor
 @Validated
 @Slf4j
 @ResponseWrapper
 @RequestMapping(path = "/1.0/files")
+/**
+ * Http controller to serve file request
+ */
 public class FileHttpController {
     private final FileService fileService;
 
@@ -36,34 +41,37 @@ public class FileHttpController {
 
     @Operation(summary = "Upload a new file")
     @PostMapping
-    public ResponseEntity<FileDto> create(@Validate(JsonSchema.FILE_CREATE) FileDto fileToAdd) {
-        log.info("in create, request body: " + fileToAdd);
-        FileDto addedFile = fileService.create(fileToAdd);
+    public ResponseEntity<FileDto> upload(@Validate(JsonSchema.FILE_CREATE) FileDto fileToAdd) {
+        log.info("saving file {}", fileToAdd.getName());
+        FileDto addedFile = fileService.save(fileToAdd);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(addedFile);
     }
 
     @Operation(summary = "Download a file")
-    @GetMapping("{id}")
-    public ResponseEntity<FileDto> download(@PathVariable UUID id) {
-        FileDto file = fileService.findById(id)
-                .orElseThrow(() -> new FileNotFoundError(id));
+    @GetMapping("{fileId}")
+    public ResponseEntity<FileDto> download(@PathVariable UUID fileId) {
+        log.info("downloading file: {}",kv("fileID",fileId));
+
+        FileDto file = fileService.findById(fileId)
+                .orElseThrow(() -> new FileNotFoundError(fileId));
         return ResponseEntity.status(HttpStatus.OK)
                 .body(file);
     }
 
     @Operation(summary = "Delete a file")
-    @DeleteMapping("{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        log.info("in delete, id: " + id);
-        fileService.delete(id);
+    @DeleteMapping("{fileId}")
+    public ResponseEntity<Void> delete(@PathVariable UUID fileId) {
+        log.info("deleting file: {}",kv("fileID",fileId));
+        fileService.deleteOne(fileId);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Change file name")
-    @PutMapping("{id}")
-    public ResponseEntity<FileDto> updateName(@PathVariable UUID id, @Validate(JsonSchema.FILE_UPDATE) FileDto fileToUpdate) {
-        fileToUpdate.setId(id);
+    @PutMapping("{fileId}")
+    public ResponseEntity<FileDto> updateName(@PathVariable UUID fileId, @Validate(JsonSchema.FILE_UPDATE) FileDto fileToUpdate) {
+        log.info("updating file: {}",kv("fileID",fileId));
+        fileToUpdate.setId(fileId);
         FileDto updatedFile = fileService.updateName(fileToUpdate);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(updatedFile);

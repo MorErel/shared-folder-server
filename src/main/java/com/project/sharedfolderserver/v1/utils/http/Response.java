@@ -12,6 +12,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * Wrapper class for all http responses
+ * Generic data types and errors
+ */
 public class Response<T> {
 
     private T data;

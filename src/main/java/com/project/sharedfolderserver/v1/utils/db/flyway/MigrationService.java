@@ -14,6 +14,11 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+/**
+ * Migration service
+ * on bean init, Will run the migration script from the MigrationProperties.SchemaPath
+ * (default: db.migrations under the resource folder)
+ */
 public class MigrationService {
     private final DataSource dataSource;
     private final MigrationProperties migrationProperties;
@@ -26,32 +31,36 @@ public class MigrationService {
     }
 
     private void migrate() {
-        List<String> tenants = getAllTenants();
+        List<String> tenants = getAllSchemas();
         tenants.forEach(this::migrate);
 
     }
 
-    private void migrate(String tenant) {
+    /**
+     * running flyway migration for the given schema
+     * @param schema - the requested schema
+     */
+    private void migrate(String schema) {
         try {
-            log.info("Starting migration for tenant: [{}]", tenant);
+            log.info("Starting migration for schema: [{}]", schema);
             Instant startTime = Instant.now();
             Flyway flyway = Flyway.configure()
                     .locations(migrationProperties.getSchemasPath())
                     .baselineOnMigrate(migrationProperties.isBaselineOnMigration())
                     .dataSource(dataSource)
-                    .schemas(tenant)
+                    .schemas(schema)
                     .load();
             flyway.migrate();
             Instant endTime = Instant.now();
             long timeElapsed = Duration.between(startTime, endTime).toMillis();
-            log.info("Finish migration for tenant [{}] in {} milliseconds", tenant, timeElapsed);
+            log.info("Finish migration for schema [{}] in {} milliseconds", schema, timeElapsed);
         } catch (Exception e) {
-            log.error("Could not migrate tenant [{}]: {}", tenant, e.getMessage());
+            log.error("Could not migrate schema [{}]: {}", schema, e.getMessage());
         }
     }
 
-    //todo: if there's time - multi-tenancy
-    private List<String> getAllTenants() {
+    //todo: if there's time - multi-schemas
+    private List<String> getAllSchemas() {
         return List.of("public");
     }
 }

@@ -15,17 +15,22 @@ import java.util.UUID;
 public class FileDto {
     @JsonProperty("id")
     private UUID id;
+
     @JsonProperty("name")
     private String name;
-    @JsonProperty("dateModified")
-    private Instant dateModified;
-    @JsonProperty("dateAdded")
-    private Instant dateAdded;
+
     private String kind;
     @JsonProperty("size")
     private String size;
+
     @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private byte[] content;
+
+    @JsonProperty("dateAdded")
+    private Instant dateAdded;
+
+    @JsonProperty("dateModified")
+    private Instant dateModified;
 
     public FileDto(UUID id, String name, Instant dateModified, Instant dateAdded, String kind, String size) {
         this.id = id;

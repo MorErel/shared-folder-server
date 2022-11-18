@@ -9,7 +9,7 @@ import com.project.sharedfolderserver.TestUtils;
 import com.project.sharedfolderserver.v1.file.FileDto;
 import com.project.sharedfolderserver.v1.utils.error.Error;
 import com.project.sharedfolderserver.v1.utils.http.Response;
-import com.project.sharedfolderserver.v1.utils.json.JSON;
+import com.project.sharedfolderserver.v1.utils.json.JsonUtil;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -52,7 +52,7 @@ public class FileHttpControllerIT extends BaseIT {
         @Sql(scripts = {SQL_SCRIPTS_PATH + "cleanTables.sql", SQL_SCRIPTS_PATH + "getFileList.sql"})
         void successGetFileList() throws IOException {
             initializeCaseTest("file/success-get-file-list");
-            List<FileDto> expectedData = JSON.objectMapper.convertValue(expectedResult.get("data"), new TypeReference<>() {
+            List<FileDto> expectedData = JsonUtil.objectMapper.convertValue(expectedResult.get("data"), new TypeReference<>() {
             });
 
             ResponseEntity<Response<List<FileDto>>> response =
@@ -77,7 +77,7 @@ public class FileHttpControllerIT extends BaseIT {
         @Sql(scripts = {SQL_SCRIPTS_PATH + "cleanTables.sql", SQL_SCRIPTS_PATH + "downloadFile.sql"})
         void successDownload() throws IOException {
             initializeCaseTest("file/success-download-file");
-            FileDto expectedData = JSON.objectMapper.convertValue(expectedResult.get("data"), new TypeReference<>() {
+            FileDto expectedData = JsonUtil.objectMapper.convertValue(expectedResult.get("data"), new TypeReference<>() {
             });
 
             ResponseEntity<Response<FileDto>> response =
@@ -101,7 +101,7 @@ public class FileHttpControllerIT extends BaseIT {
         @Test
         void failedDownload() throws IOException {
             initializeCaseTest("file/failed-download-file");
-            List<Error> expectedErrors = JSON.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
+            List<Error> expectedErrors = JsonUtil.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
             });
 
             ResponseEntity<Response<FileDto>> response =
@@ -141,7 +141,7 @@ public class FileHttpControllerIT extends BaseIT {
         @Test
         void successUploadFile() throws IOException, IllegalAccessException {
             initializeCaseTest("file/success-upload-file");
-            FileDto expectedData = JSON.objectMapper.convertValue(expectedResult.get("data"), new TypeReference<>() {
+            FileDto expectedData = JsonUtil.objectMapper.convertValue(expectedResult.get("data"), new TypeReference<>() {
             });
 
             ResponseEntity<Response<FileDto>> response =
@@ -165,7 +165,7 @@ public class FileHttpControllerIT extends BaseIT {
         @Sql(scripts = {SQL_SCRIPTS_PATH + "cleanTables.sql", SQL_SCRIPTS_PATH + "uploadFileExistingName.sql"})
         void failedUploadExistingName() throws IOException {
             initializeCaseTest("file/failed-upload-file-existing-name");
-            List<Error> expectedErrors = JSON.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
+            List<Error> expectedErrors = JsonUtil.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
             });
 
             ResponseEntity<Response<FileDto>> response =
@@ -189,7 +189,7 @@ public class FileHttpControllerIT extends BaseIT {
         @ValueSource(strings = {"badname", "usik^*.ld", "=-0", " ggg.file.s"})
         void failedUploadIllegalName(String badname) throws IOException {
             initializeCaseTest("file/failed-upload-file-illegal-name");
-            List<Error> expectedErrors = JSON.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
+            List<Error> expectedErrors = JsonUtil.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
             });
             String errorMessage = String.format("file could not be created. Illegal file name %s, file name must be in the form of NAME.KIND, using letters, numbers. some special characters are illegal", badname);
 
@@ -217,7 +217,7 @@ public class FileHttpControllerIT extends BaseIT {
         @NullAndEmptySource
         void failedUploadNullOrEmptyName(String badname) throws IOException {
             initializeCaseTest("file/failed-upload-file-null-empty-name");
-            List<Error> expectedErrors = JSON.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
+            List<Error> expectedErrors = JsonUtil.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
             });
             String errorType;
             if (badname == null) {
@@ -251,7 +251,7 @@ public class FileHttpControllerIT extends BaseIT {
         @MethodSource("generateIllegalUploadRequestParameters")
         void failedUploadIllegalRequestParameters(String fieldName, JsonNode illegalFieldContent, String errorMessage) throws IOException {
             initializeCaseTest("file/failed-upload-file-illegal-content");
-            List<Error> expectedErrors = JSON.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
+            List<Error> expectedErrors = JsonUtil.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
             });
             Error expectedError = expectedErrors.stream().findFirst().orElseThrow();
             ((ObjectNode) (preRequest.get("body"))).set(fieldName, illegalFieldContent);
@@ -277,8 +277,8 @@ public class FileHttpControllerIT extends BaseIT {
             return Stream.of(
                     Arguments.of("name", null, "null"),
                     Arguments.of("content", null, "null"),
-                    Arguments.of("content", JSON.objectMapper.createArrayNode(), "array"),
-                    Arguments.of("name", JSON.objectMapper.createArrayNode(), "array"),
+                    Arguments.of("content", JsonUtil.objectMapper.createArrayNode(), "array"),
+                    Arguments.of("name", JsonUtil.objectMapper.createArrayNode(), "array"),
                     Arguments.of("content", new IntNode(8), "integer"),
                     Arguments.of("name", new IntNode(8), "integer")
             );

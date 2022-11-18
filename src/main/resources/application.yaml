@@ -3,6 +3,13 @@ migration:
   schemasPath: ${DB_MIGRATION_SCHEMAS_PATH:classpath:db/migrations}
   baselineOnMigration: ${DB_MIGRATION_BASELINE_ENABLED:true}
 
+logging:
+  level:
+    root: error
+    com:
+      project:
+        sharedfolderserver: ${LOG_LEVEL:INFO}
+
 spring:
   flyway:
     # should be disabled as we use our migration
@@ -14,7 +21,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect

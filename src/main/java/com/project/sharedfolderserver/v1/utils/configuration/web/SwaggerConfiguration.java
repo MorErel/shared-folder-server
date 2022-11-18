@@ -10,6 +10,10 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
+/**
+ * Swagger configuration
+ * can be access from http://<app-url>:<app-port>/swagger-ui/index.html
+ */
 public class SwaggerConfiguration {
 
     @Bean
