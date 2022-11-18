@@ -97,7 +97,7 @@ public class FileHttpControllerIT extends BaseIT {
             assertEquals(expectedData, actualData, "expect the get a file with content");
         }
 
-        @DisplayName("Failed: Download file")
+        @DisplayName("Failed: Download file which doesn't exist")
         @Test
         void failedDownload() throws IOException {
             initializeCaseTest("file/failed-download-file");
@@ -186,18 +186,47 @@ public class FileHttpControllerIT extends BaseIT {
 
         @DisplayName("Failed: upload file with illegal name")
         @ParameterizedTest
-        @NullAndEmptySource
         @ValueSource(strings = {"badname", "usik^*.ld", "=-0", " ggg.file.s"})
         void failedUploadIllegalName(String badname) throws IOException {
             initializeCaseTest("file/failed-upload-file-illegal-name");
             List<Error> expectedErrors = JSON.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
             });
-            String errorMessage;
-            if (badname == null || badname.isEmpty()) {
-                errorMessage = "file could not be created. file name can not be empty";
-            } else {
-                errorMessage = String.format("file could not be created. Illegal file name %s, file name must be in the form of NAME.KIND, using letters, numbers. some special characters are illegal", badname);
+            String errorMessage = String.format("file could not be created. Illegal file name %s, file name must be in the form of NAME.KIND, using letters, numbers. some special characters are illegal", badname);
+
+            expectedErrors.stream().findFirst().ifPresent(error -> error.setMessage(errorMessage));
+            ((ObjectNode) (preRequest.get("body"))).put("name", badname);
+
+            ResponseEntity<Response<FileDto>> response =
+                    restTemplate.exchange(getUrl(preRequest.get("path").asText())
+                            , HttpMethod.valueOf(preRequest.get("method").asText())
+                            , new HttpEntity<>(preRequest.get("body"))
+                            , new ParameterizedTypeReference<>() {
+                            });
+
+            assertNotNull(response, "expect to have a response");
+            Response<FileDto> actualBody = response.getBody();
+            assertNotNull(actualBody, "expect to have a body in the response");
+            assertFalse(CollectionUtils.isEmpty(actualBody.getErrors()), "expected to get errors");
+            FileDto actualData = actualBody.getData();
+            assertNull(actualData, "expect data to be null");
+            assertEquals(expectedErrors, actualBody.getErrors(), "expected the same errors");
+        }
+
+        @DisplayName("Failed: upload file with empty or null name")
+        @ParameterizedTest
+        @NullAndEmptySource
+        void failedUploadNullOrEmptyName(String badname) throws IOException {
+            initializeCaseTest("file/failed-upload-file-null-empty-name");
+            List<Error> expectedErrors = JSON.objectMapper.convertValue(expectedResult.get("errors"), new TypeReference<>() {
+            });
+            String errorType;
+            if (badname == null) {
+                errorType = "null found, string expected";
             }
+            else {
+                errorType = "must be at least 1 characters long";
+            }
+            String errorMessage = String.format("validation error [$.name: %s]", errorType);
             expectedErrors.stream().findFirst().ifPresent(error -> error.setMessage(errorMessage));
             ((ObjectNode) (preRequest.get("body"))).put("name", badname);
 
