@@ -11,7 +11,7 @@
     "data": null,
     "errors": [
       {
-        "name": "ValidationError",
+        "name": "FileValidationError",
         "message": "validation error [$.name: null found, string expected]"
       }
     ]
