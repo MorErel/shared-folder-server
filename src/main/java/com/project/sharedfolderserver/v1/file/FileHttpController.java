@@ -29,7 +29,6 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class FileHttpController {
     private final FileService fileService;
 
-    // todo - edit all the descriptions
 
     @Operation(summary = "Get a list of the files")
     @GetMapping
