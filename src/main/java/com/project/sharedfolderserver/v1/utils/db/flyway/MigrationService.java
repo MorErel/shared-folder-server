@@ -59,7 +59,6 @@ public class MigrationService {
         }
     }
 
-    //todo: if there's time - multi-schemas
     private List<String> getAllSchemas() {
         return List.of("public");
     }
