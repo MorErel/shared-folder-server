@@ -33,14 +33,19 @@ public class RequestContextFilter implements Filter {
         Map<String, String> headers = extractHeadersFromRequest(httpServletRequest);
         log.info("Incoming request: {} to {}, headers: [{}]", httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), headers);
         String requestIdHeader = httpServletRequest.getHeader(REQUEST_ID_HEADER);
-        if (StringUtils.isNotEmpty(requestIdHeader)) {
-            context.setRequestId(requestIdHeader);
-        } else {
-            context.setRequestId(UUID.randomUUID().toString());
+        try {
+            if (StringUtils.isNotEmpty(requestIdHeader)) {
+                context.setRequestId(requestIdHeader);
+            } else {
+                context.setRequestId(UUID.randomUUID().toString());
+            }
+            HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+            httpServletResponse.setHeader(REQUEST_ID_HEADER, context.getRequestId());
+
+            filterChain.doFilter(servletRequest, servletResponse);
+        } finally {
+            context.clear();
         }
-        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-        httpServletResponse.setHeader(REQUEST_ID_HEADER, context.getRequestId());
-        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     /**
