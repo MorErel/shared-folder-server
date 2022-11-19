@@ -1,10 +1,8 @@
 package com.project.sharedfolderserver.v1.file;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.sharedfolderserver.utils.http.response.ResponseWrapper;
 import com.project.sharedfolderserver.v1.file.exception.FileNotFoundError;
 import com.project.sharedfolderserver.v1.utils.JsonSchema;
-import com.project.sharedfolderserver.v1.utils.json.JsonUtil;
 import com.project.sharedfolderserver.v1.utils.validation.json.Validate;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +17,15 @@ import java.util.UUID;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
+/**
+ * Http controller to serve file request
+ */
 @RestController
 @RequiredArgsConstructor
 @Validated
 @Slf4j
 @ResponseWrapper
 @RequestMapping(path = "/1.0/files")
-/**
- * Http controller to serve file request
- */
 public class FileHttpController {
     private final FileService fileService;
 
