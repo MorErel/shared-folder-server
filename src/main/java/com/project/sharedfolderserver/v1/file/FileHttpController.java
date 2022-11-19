@@ -42,7 +42,7 @@ public class FileHttpController {
 
     @Operation(summary = "Upload a new file")
     @PostMapping
-    public ResponseEntity<FileDto> upload(@Validate(JsonSchema.FILE_CREATE) FileDto fileToAdd) {
+    public ResponseEntity<FileDto> upload(@RequestBody @Validate(JsonSchema.FILE_CREATE) FileDto fileToAdd) {
         log.info("saving file {}", fileToAdd.getName());
         FileDto addedFile = fileService.save(fileToAdd);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -70,7 +70,7 @@ public class FileHttpController {
 
     @Operation(summary = "Change file name")
     @PutMapping("{fileId}")
-    public ResponseEntity<FileDto> updateName(@PathVariable UUID fileId, @Validate(JsonSchema.FILE_UPDATE) FileDto fileToUpdate) {
+    public ResponseEntity<FileDto> updateName(@PathVariable UUID fileId, @RequestBody @Validate(JsonSchema.FILE_UPDATE) FileDto fileToUpdate) {
         log.info("updating file: {}",kv("fileID",fileId));
         fileToUpdate.setId(fileId);
         FileDto updatedFile = fileService.updateName(fileToUpdate);
