@@ -31,7 +31,6 @@ public class RequestContextFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         Map<String, String> headers = extractHeadersFromRequest(httpServletRequest);
-        log.info("Incoming request: {} to {}, headers: [{}]", httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), headers);
         String requestIdHeader = httpServletRequest.getHeader(REQUEST_ID_HEADER);
         try {
             if (StringUtils.isNotEmpty(requestIdHeader)) {
@@ -39,9 +38,9 @@ public class RequestContextFilter implements Filter {
             } else {
                 context.setRequestId(UUID.randomUUID().toString());
             }
+            log.info("Incoming request: {} to {}, headers: [{}]", httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), headers);
             HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
             httpServletResponse.setHeader(REQUEST_ID_HEADER, context.getRequestId());
-
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
             context.clear();
